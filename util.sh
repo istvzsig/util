@@ -119,3 +119,24 @@ hoc_mute_func() {
 load_env_variables() {
   export $(grep -v '^\s*#' .env | xargs)
 }
+
+# Loading animation
+loading() {
+    local pid=$1
+    local delay=0.1
+    local width=50  # Width of the progress bar
+
+    while kill -0 $pid 2>/dev/null; do
+        # Get the current progress percentage
+        local percent=$(( $(ps -o pid= | grep -c $pid) * 100 / 1 ))  # This is a placeholder; replace with actual logic if needed
+        local progress=$(( percent * width / 100 ))
+
+        # Create the progress bar
+        local bar=$(printf "%-${width}s" "#" | sed "s/ /#/g; s/#/ /$progress")
+
+        # Print the progress bar
+        echo -ne "\rLoading... [${bar}] ${percent}%"
+        sleep $delay
+    done
+    echo -ne "\rDone!      \n"
+}
