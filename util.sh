@@ -102,7 +102,7 @@ cleanup_cookie_jar() {
 }
 
 # Function to convert an array of arguments into a comma-separated string
-convert_array_to_string() {
+convert_to_string() {
   local array=("$@") # Correctly capture all arguments as an array
   IFS=,              # Set the Internal Field Separator to comma
   echo "${array[*]}" # Join the array elements with a comma and print
