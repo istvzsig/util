@@ -114,3 +114,8 @@ hoc_mute_func() {
   shift
   $wrapper_func $@ >/dev/null
 }
+
+# Load environment variables from .env file
+load_env_variables() {
+  export $(grep -v '^\s*#' .env | xargs)
+}
