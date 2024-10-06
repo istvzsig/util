@@ -107,3 +107,10 @@ convert_array_to_string() {
   IFS=,              # Set the Internal Field Separator to comma
   echo "${array[*]}" # Join the array elements with a comma and print
 }
+
+# Higher order function to avoid echo to console
+hoc_mute_func() {
+  local wrapped_func=$1
+  shift
+  $wrapper_func $@ >/dev/null
+}
