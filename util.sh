@@ -1,5 +1,30 @@
 #!/bin/bash
 
+# Exit with error
+exit_with_error() {
+  local status=$1
+
+  if [ $status -eq 1 ]; then
+    echo "Exited with Status Code $status"
+    exit 1
+  fi
+}
+
+# Rename file if exists
+rename_file() {
+  local old_name=$1
+  local new_name=$2
+
+  if [ ! -f $old_name ]; then
+    echo "File with $old_name does not exists."
+    return 1
+  fi
+
+  mv $old_name $new_name
+  echo "File renamed from $old_name to $new_name"
+  return 0
+}
+
 # Function to check if the ACCESS_TOKEN environment variable is set
 check_access_token_from_env() {
   # Check if ACCESS_TOKEN is empty
