@@ -11,18 +11,18 @@ exit_with_error() {
 }
 
 # Rename file if exists
-rename_file() {
+rename_file_if_exists() {
+  local status
   local old_name=$1
   local new_name=$2
 
-  if [ ! -f $old_name ]; then
-    echo "File with $old_name does not exists."
-    return 1
+  if [ -f $old_name ]; then
+    mv $old_name $new_name
+    echo "File renamed from $old_name to $new_name"
+    status=$?
   fi
-
-  mv $old_name $new_name
-  echo "File renamed from $old_name to $new_name"
-  return 0
+  
+  exit_with_error $status
 }
 
 # Function to check if the ACCESS_TOKEN environment variable is set
