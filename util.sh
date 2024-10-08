@@ -5,24 +5,23 @@ exit_with_error() {
   local status=$1
 
   if [ $status -eq 1 ]; then
-    echo "Exited with Status Code $status"
+    echo "Exited with status code: $status"
     exit 1
   fi
 }
 
 # Rename file if exists
 rename_file_if_exists() {
-  local status
+  local status=0
   local old_name=$1
   local new_name=$2
 
-  if [ -f $old_name ]; then
-    mv $old_name $new_name
-    echo "File renamed from $old_name to $new_name"
-    status=$?
+  if [ ! -f $old_name ]; then
+    echo "File with $old_name does not exists."
+    return 1
   fi
-  
-  exit_with_error $status
+  mv $old_name $new_name
+  echo "File renamed from $old_name to $new_name"
 }
 
 # Function to check if the ACCESS_TOKEN environment variable is set
@@ -122,8 +121,7 @@ check_robots_txt() {
 
 # Clean up function to remove the cookie jar file
 cleanup_cookie_jar() {
-  rm -f $COOKIE_JAR         # Remove the cookie jar file if it exists
-  echo "Cookie Jar Cleaned" # Print a message indicating cleanup is complete
+  rm -f $COOKIE_JAR # Remove the cookie jar file if it exists
 }
 
 # Function to convert an array of arguments into a comma-separated string
@@ -134,10 +132,10 @@ convert_to_string() {
 }
 
 # Higher order function to avoid echo to console
-hoc_mute_func() {
+mute_func() {
   local wrapped_func=$1
   shift
-  $wrapper_func $@ >/dev/null
+  $wrapped_func $@ >/dev/null
 }
 
 # Load environment variables from .env file
@@ -147,21 +145,22 @@ load_env_variables() {
 
 # Loading animation
 loading() {
-    local pid=$1
-    local delay=0.1
-    local width=50  # Width of the progress bar
+  local pid=$1
+  local delay=0.1
+  local width=50 # Width of the progress bar
 
-    while kill -0 $pid 2>/dev/null; do
-        # Get the current progress percentage
-        local percent=$(( $(ps -o pid= | grep -c $pid) * 100 / 1 ))  # This is a placeholder; replace with actual logic if needed
-        local progress=$(( percent * width / 100 ))
+  while kill -0 $pid 2>/dev/null; do
+    # Get the current progress percentage
+    local percent=$(($(ps -o pid= | grep -c $pid) * 100 / 1)) # This is a placeholder; replace with actual logic if needed
+    local progress=$((percent * width / 100))
 
-        # Create the progress bar
-        local bar=$(printf "%-${width}s" "#" | sed "s/ /#/g; s/#/ /$progress")
+    # Create the progress bar
+    local bar=$(printf "%-${width}s" "#" | sed "s/ /#/g; s/#/ /$progress")
 
-        # Print the progress bar
-        echo -ne "\rLoading... [${bar}] ${percent}%"
-        sleep $delay
-    done
-    echo -ne "\rDone!      \n"
+    # Print the progress bar
+    echo -ne "\rLoading... [${bar}] ${percent}%"
+    sleep $delay
+  done
+  echo -ne "\rDone!      \n"
 }
+
