@@ -1,5 +1,7 @@
 #!/bin/bash
 
+mkdir -p ./temp
+
 # Exit with error
 exit_with_error() {
   local status=$1
@@ -163,4 +165,3 @@ loading() {
   done
   echo -ne "\rDone!      \n"
 }
-
